@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/dashboard";
@@ -7,30 +7,57 @@ import Subjects from "@/pages/subjects";
 import StudySessions from "@/pages/study-sessions";
 import Notes from "@/pages/notes";
 import Goals from "@/pages/goals";
+import AuthPage from "@/pages/auth-page";
 import AppShell from "@/components/layout/app-shell";
 import { ThemeProvider } from "./hooks/use-theme";
+import { ProtectedRoute } from "./lib/protected-route";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Dashboard} />
-      <Route path="/tasks" component={Tasks} />
-      <Route path="/subjects" component={Subjects} />
-      <Route path="/sessions" component={StudySessions} />
-      <Route path="/notes" component={Notes} />
-      <Route path="/goals" component={Goals} />
+      <ProtectedRoute path="/" component={Dashboard} />
+      <ProtectedRoute path="/tasks" component={Tasks} />
+      <ProtectedRoute path="/subjects" component={Subjects} />
+      <ProtectedRoute path="/sessions" component={StudySessions} />
+      <ProtectedRoute path="/notes" component={Notes} />
+      <ProtectedRoute path="/goals" component={Goals} />
+      <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>
   );
 }
 
 function App() {
+  const [location] = useLocation();
+  const [userData] = useLocalStorage("studyTrackerData", { 
+    user: null as null | { name: string; initials: string; role: string } 
+  });
+  
+  // If we're on the auth page, don't show the AppShell
+  const isAuthPage = location === "/auth";
+  
+  // If user is not logged in and not on auth page, redirect to auth
+  if (!userData.user && !isAuthPage) {
+    return (
+      <ThemeProvider>
+        <TooltipProvider>
+          <AuthPage />
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+  
   return (
     <ThemeProvider>
       <TooltipProvider>
-        <AppShell>
+        {isAuthPage ? (
           <Router />
-        </AppShell>
+        ) : (
+          <AppShell>
+            <Router />
+          </AppShell>
+        )}
       </TooltipProvider>
     </ThemeProvider>
   );
