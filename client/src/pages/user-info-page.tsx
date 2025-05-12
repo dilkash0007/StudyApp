@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useLocation, useSearch, useRoute } from "wouter";
+import { useLocation, useSearch } from "wouter";
 import {
   Form,
   FormControl,
@@ -87,6 +87,14 @@ export default function UserInfoPage() {
           educationLevel: values.educationLevel,
           institute: values.institute,
           studyGoal: values.studyGoal,
+        } as {
+          name: string;
+          initials: string;
+          role: string;
+          age: string;
+          educationLevel: string;
+          institute: string;
+          studyGoal: string;
         },
       };
       

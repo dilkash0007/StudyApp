@@ -50,8 +50,18 @@ export default function AuthPage() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const { theme } = useTheme();
-  const [userData, setUserData] = useLocalStorage("studyTrackerData", { 
-    user: null as null | { name: string; initials: string; role: string } 
+  const [userData, setUserData] = useLocalStorage<{
+    user: null | { 
+      name: string; 
+      initials: string; 
+      role: string;
+      age?: string;
+      educationLevel?: string;
+      institute?: string;
+      studyGoal?: string;
+    }
+  }>("studyTrackerData", { 
+    user: null
   });
 
   // Check if user is already logged in

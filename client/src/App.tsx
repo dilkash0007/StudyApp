@@ -32,8 +32,18 @@ function Router() {
 
 function App() {
   const [location] = useLocation();
-  const [userData] = useLocalStorage("studyTrackerData", { 
-    user: null as null | { name: string; initials: string; role: string } 
+  const [userData] = useLocalStorage<{
+    user: null | { 
+      name: string; 
+      initials: string; 
+      role: string;
+      age?: string;
+      educationLevel?: string;
+      institute?: string;
+      studyGoal?: string;
+    }
+  }>("studyTrackerData", { 
+    user: null
   });
   
   // If we're on the auth page or user-info page, don't show the AppShell
