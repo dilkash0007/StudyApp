@@ -154,25 +154,6 @@ export function MobileNav() {
           </div>
         </div>
       </div>
-
-      {/* Bottom Navigation */}
-      <div className="lg:hidden glass shadow-lg flex items-center justify-around py-3 px-6 z-20">
-        {bottomNavItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={cn(
-              "flex flex-col items-center",
-              location === item.href
-                ? "text-primary dark:text-primary"
-                : "text-gray-500 dark:text-gray-400"
-            )}
-          >
-            {item.icon}
-            <span className="text-xs mt-1">{item.label}</span>
-          </Link>
-        ))}
-      </div>
     </>
   );
 }

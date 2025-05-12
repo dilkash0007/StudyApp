@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Sidebar } from "./sidebar";
 import { MobileNav } from "./mobile-nav";
+import { BottomNav } from "./bottom-nav";
 
 interface AppShellProps {
   children: ReactNode;
@@ -23,9 +24,11 @@ export default function AppShell({ children }: AppShellProps) {
         <main className="flex-1 flex flex-col overflow-hidden">
           <MobileNav />
           
-          <div className="flex-1 overflow-y-auto px-4 py-6 md:px-8 lg:px-10 text-gray-800 dark:text-gray-200">
+          <div className="flex-1 overflow-y-auto px-4 py-6 pb-24 md:px-8 lg:px-10 text-gray-800 dark:text-gray-200">
             {children}
           </div>
+          
+          <BottomNav />
         </main>
       </div>
     </div>
