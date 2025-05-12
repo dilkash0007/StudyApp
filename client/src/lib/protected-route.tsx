@@ -8,7 +8,9 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ path, component: Component }: ProtectedRouteProps) {
-  const [userData] = useLocalStorage("studyTrackerData", { user: null });
+  const [userData] = useLocalStorage("studyTrackerData", { 
+    user: null as null | { name: string; initials: string; role: string } 
+  });
 
   return (
     <Route
