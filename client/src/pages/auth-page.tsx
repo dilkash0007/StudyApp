@@ -83,41 +83,14 @@ export default function AuthPage() {
   async function onLoginSubmit(values: z.infer<typeof loginSchema>) {
     setIsLoading(true);
     try {
-      // In a full backend implementation, this would call the login API
-      // For now, we'll simulate a login with localStorage
-      
-      // Simulating backend validation
-      if (values.username === "demo" && values.password === "password") {
-        // Store user in localStorage
-        const userData = {
-          user: {
-            name: "Demo User",
-            initials: "DU",
-            role: "Student",
-          }
-        };
-        setUserData(userData);
-        
-        toast({
-          title: "Login successful!",
-          description: "Welcome back to StudyTracker",
-        });
-        
-        navigate("/");
-      } else {
-        toast({
-          title: "Login failed",
-          description: "Invalid username or password",
-          variant: "destructive",
-        });
-      }
+      // Login directly with user-entered credentials and proceed to user info page
+      navigate(`/user-info?username=${encodeURIComponent(values.username)}`);
     } catch (error) {
       toast({
         title: "Login failed",
         description: "Something went wrong. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   }
@@ -125,32 +98,14 @@ export default function AuthPage() {
   async function onRegisterSubmit(values: z.infer<typeof registerSchema>) {
     setIsLoading(true);
     try {
-      // In a full backend implementation, this would call the register API
-      // For now, we'll simulate registration with localStorage
-      
-      // Store user in localStorage
-      const userData = {
-        user: {
-          name: values.name,
-          initials: values.name.split(" ").map(n => n[0]).join("").toUpperCase(),
-          role: "Student",
-        }
-      };
-      setUserData(userData);
-      
-      toast({
-        title: "Registration successful!",
-        description: "Welcome to StudyTracker",
-      });
-      
-      navigate("/");
+      // Navigate to user info page with the registered username
+      navigate(`/user-info?username=${encodeURIComponent(values.username)}&name=${encodeURIComponent(values.name)}&isNewUser=true`);
     } catch (error) {
       toast({
         title: "Registration failed",
         description: "Something went wrong. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   }
@@ -213,15 +168,6 @@ export default function AuthPage() {
                       <Button type="submit" className="w-full" disabled={isLoading}>
                         {isLoading ? "Logging in..." : "Login"}
                       </Button>
-                      
-                      <div className="text-center text-sm mt-4">
-                        <p className="text-gray-500 dark:text-gray-400">
-                          Demo credentials: <br />
-                          <span className="font-mono bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded">
-                            demo / password
-                          </span>
-                        </p>
-                      </div>
                     </form>
                   </Form>
                 </TabsContent>

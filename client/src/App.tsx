@@ -8,6 +8,7 @@ import StudySessions from "@/pages/study-sessions";
 import Notes from "@/pages/notes";
 import Goals from "@/pages/goals";
 import AuthPage from "@/pages/auth-page";
+import UserInfoPage from "@/pages/user-info-page";
 import AppShell from "@/components/layout/app-shell";
 import { ThemeProvider } from "./hooks/use-theme";
 import { ProtectedRoute } from "./lib/protected-route";
@@ -23,6 +24,7 @@ function Router() {
       <ProtectedRoute path="/notes" component={Notes} />
       <ProtectedRoute path="/goals" component={Goals} />
       <Route path="/auth" component={AuthPage} />
+      <Route path="/user-info" component={UserInfoPage} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -34,11 +36,12 @@ function App() {
     user: null as null | { name: string; initials: string; role: string } 
   });
   
-  // If we're on the auth page, don't show the AppShell
+  // If we're on the auth page or user-info page, don't show the AppShell
   const isAuthPage = location === "/auth";
+  const isUserInfoPage = location.startsWith("/user-info");
   
-  // If user is not logged in and not on auth page, redirect to auth
-  if (!userData.user && !isAuthPage) {
+  // If user is not logged in and not on auth page or user-info page, redirect to auth
+  if (!userData.user && !isAuthPage && !isUserInfoPage) {
     return (
       <ThemeProvider>
         <TooltipProvider>
@@ -51,7 +54,7 @@ function App() {
   return (
     <ThemeProvider>
       <TooltipProvider>
-        {isAuthPage ? (
+        {isAuthPage || isUserInfoPage ? (
           <Router />
         ) : (
           <AppShell>
