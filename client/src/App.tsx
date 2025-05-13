@@ -15,9 +15,12 @@ import { ProtectedRoute } from "./lib/protected-route";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useEffect } from "react";
 
+// Set base path for GitHub Pages
+const basePath = import.meta.env.DEV ? "" : "/StudyApp";
+
 function Router() {
   return (
-    <Switch>
+    <Switch base={basePath}>
       <ProtectedRoute path="/" component={Dashboard} />
       <ProtectedRoute path="/tasks" component={Tasks} />
       <ProtectedRoute path="/subjects" component={Subjects} />
@@ -32,7 +35,7 @@ function Router() {
 }
 
 function App() {
-  const [location, setLocation] = useLocation();
+  const [location, setLocation] = useLocation({ base: basePath });
   const [userData] = useLocalStorage<{
     user: null | {
       name: string;
