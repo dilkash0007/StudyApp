@@ -3,14 +3,26 @@ import { useState, useEffect } from "react";
 export function useLocalStorage<T>(key: string, initialValue: T) {
   // State to store our value
   const [storedValue, setStoredValue] = useState<T>(() => {
+    if (typeof window === "undefined") {
+      return initialValue;
+    }
+
     try {
       // Get from local storage by key
       const item = window.localStorage.getItem(key);
       // Parse stored json or if none return initialValue
-      return item ? JSON.parse(item) : initialValue;
+      if (item) {
+        try {
+          return JSON.parse(item);
+        } catch (parseError) {
+          console.error(`Error parsing localStorage key "${key}":`, parseError);
+          return initialValue;
+        }
+      }
+      return initialValue;
     } catch (error) {
       // If error also return initialValue
-      console.log(error);
+      console.error(`Error reading from localStorage key "${key}":`, error);
       return initialValue;
     }
   });
@@ -24,19 +36,30 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
         value instanceof Function ? value(storedValue) : value;
       // Save state
       setStoredValue(valueToStore);
-      // Save to local storage
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+
+      if (typeof window !== "undefined") {
+        // Save to local storage
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      }
     } catch (error) {
       // A more advanced implementation would handle the error case
-      console.log(error);
+      console.error(`Error saving to localStorage key "${key}":`, error);
     }
   };
 
   // Listen for changes to this local storage key from other tabs/windows
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     function handleStorageChange(e: StorageEvent) {
       if (e.key === key && e.newValue) {
-        setStoredValue(JSON.parse(e.newValue));
+        try {
+          setStoredValue(JSON.parse(e.newValue));
+        } catch (error) {
+          console.error(`Error parsing storage event for key "${key}":`, error);
+        }
       }
     }
 

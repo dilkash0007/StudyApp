@@ -13,6 +13,7 @@ import AppShell from "@/components/layout/app-shell";
 import { ThemeProvider } from "./hooks/use-theme";
 import { ProtectedRoute } from "./lib/protected-route";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useEffect } from "react";
 
 function Router() {
   return (
@@ -31,36 +32,37 @@ function Router() {
 }
 
 function App() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [userData] = useLocalStorage<{
-    user: null | { 
-      name: string; 
-      initials: string; 
+    user: null | {
+      name: string;
+      initials: string;
       role: string;
       age?: string;
       educationLevel?: string;
       institute?: string;
       studyGoal?: string;
-    }
-  }>("studyTrackerData", { 
-    user: null
+    };
+  }>("studyTrackerData", {
+    user: null,
   });
-  
+
   // If we're on the auth page or user-info page, don't show the AppShell
   const isAuthPage = location === "/auth";
   const isUserInfoPage = location.startsWith("/user-info");
-  
+
   // If user is not logged in and not on auth page or user-info page, redirect to auth
+  useEffect(() => {
+    if (!userData.user && !isAuthPage && !isUserInfoPage) {
+      setLocation("/auth");
+    }
+  }, [userData.user, isAuthPage, isUserInfoPage, setLocation]);
+
+  // If we're redirecting to auth, render nothing until the redirect happens
   if (!userData.user && !isAuthPage && !isUserInfoPage) {
-    return (
-      <ThemeProvider>
-        <TooltipProvider>
-          <AuthPage />
-        </TooltipProvider>
-      </ThemeProvider>
-    );
+    return null;
   }
-  
+
   return (
     <ThemeProvider>
       <TooltipProvider>

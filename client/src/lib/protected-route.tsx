@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { Route, Redirect } from "wouter";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 
@@ -7,30 +7,33 @@ interface ProtectedRouteProps {
   component: () => ReactNode;
 }
 
-export function ProtectedRoute({ path, component: Component }: ProtectedRouteProps) {
+export function ProtectedRoute({
+  path,
+  component: Component,
+}: ProtectedRouteProps) {
   const [userData] = useLocalStorage<{
-    user: null | { 
-      name: string; 
-      initials: string; 
+    user: null | {
+      name: string;
+      initials: string;
       role: string;
       age?: string;
       educationLevel?: string;
       institute?: string;
       studyGoal?: string;
-    }
-  }>("studyTrackerData", { 
-    user: null
+    };
+  }>("studyTrackerData", {
+    user: null,
   });
 
   return (
     <Route
       path={path}
       component={() => {
-        if (userData.user) {
-          return <Component />;
-        } else {
+        if (!userData.user) {
           return <Redirect to="/auth" />;
         }
+
+        return <Component />;
       }}
     />
   );
